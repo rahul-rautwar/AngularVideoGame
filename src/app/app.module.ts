@@ -5,7 +5,7 @@ import { BrowserModule } from '@angular/platform-browser';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS, HttpErrorResponse } from '@angular/common/http';
 
 import { GaugeModule } from 'angular-gauge';
 import { MatTabsModule } from '@angular/material/tabs';
@@ -17,6 +17,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { AppComponent } from './app.component';
 import { SearchBarComponent } from './components/search-bar/search-bar.component';
 import { HomeComponent } from './components/home/home.component';
+import { HttpHeadersInterceptor } from './interceptors/http-headers.interceptor';
+import { HttpErrorsInterceptors } from './interceptors/http-errors.interceptor';
 
 @NgModule({
   declarations: [
@@ -36,7 +38,18 @@ import { HomeComponent } from './components/home/home.component';
     MatIconModule,
     MatTabsModule
   ],
-  providers: [],
+  providers: [
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpHeadersInterceptor,
+      multi: true
+    },
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpErrorsInterceptors,
+      multi: true
+    }
+  ],
   // schemas: [CUSTOM_ELEMENTS_SCHEMA],
   bootstrap: [AppComponent]
 })
